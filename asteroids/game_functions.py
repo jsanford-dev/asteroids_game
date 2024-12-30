@@ -1,11 +1,11 @@
 import sys
 import pygame
 import math
-import random
 
 from asteroids.bullet import Bullet
-from asteroids.asteroid_target import Asteroid
+from asteroids.asteroid import Asteroid
 
+# Handle user actions
 def check_events(game_settings, screen, sound_manager, ship, bullets):
     """ Respond to keypresses and mouse events."""
     for event in pygame.event.get():
@@ -41,7 +41,7 @@ def check_keyup_events(event, ship):
 
 def update_screen(game_settings, screen, ship, bullets, asteroid):
     """Update images on the screen and flip to the new screen."""
-    # Redraw the screen during each pass through the loop.
+
     screen.fill(game_settings.bg_colour)
 
     for bullet in bullets.sprites():
@@ -50,13 +50,17 @@ def update_screen(game_settings, screen, ship, bullets, asteroid):
     ship.blitme()
     asteroid.draw(screen)
 
-    # Make the most recently drawn screen visable.
     pygame.display.flip()
 
+# Handle bullets
 def update_bullets(game_settings, sound_manager, bullets, asteroid):
-    """Update positions of bullets and handle their lifecycle."""
+    """Update bullets and handle collisions."""
     bullets.update()
+    handle_bullet_removal(game_settings, bullets)
+    handle_bullet_collisions(sound_manager, bullets, asteroid)
 
+def handle_bullet_removal(game_settings, bullets):
+    """Handle bullets that exceed distance or go out of bounds."""
     for bullet in bullets.copy():
         # Update the distance traveled
         dx = bullet.x - bullet.start_x
@@ -86,17 +90,9 @@ def update_bullets(game_settings, sound_manager, bullets, asteroid):
         # Update the bullet's rect position after wrapping
         bullet.rect.centerx = bullet.x
         bullet.rect.centery = bullet.y
-    
-    collisions = pygame.sprite.groupcollide(bullets, asteroid, True, True)
 
+def handle_bullet_collisions(sound_manager, bullets, asteroids):
+    """Check for and handle collisions between bullets and asteroids."""
+    collisions = pygame.sprite.groupcollide(bullets, asteroids, True, True)
     if collisions:
         sound_manager.play_sound('explosion')
-
-def create_asteroid(game_settings, screen, asteroids):
-    """Create an asteroid."""
-    asteroid = Asteroid(game_settings, screen)
-    asteroid.rect.x = random.randint(0, game_settings.screen_width - asteroid.rect.width)
-    asteroid.rect.y = random.randint(0, game_settings.screen_length - asteroid.rect.height)
-    asteroid.x = float(asteroid.rect.x)
-    asteroid.y = float(asteroid.rect.y)
-    asteroids.add(asteroid)

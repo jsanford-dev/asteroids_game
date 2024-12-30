@@ -5,7 +5,7 @@ from pygame.sprite import Group
 from asteroids.settings import Settings
 from asteroids.sound_manager import SoundManager
 from asteroids.ship import Ship
-from asteroids.asteroid_target import Asteroid
+from asteroids.asteroid import Asteroid
 
 import asteroids.game_functions as gf
 
@@ -17,7 +17,7 @@ def run_game():
     screen = pygame.display.set_mode(
         (game_settings.screen_width, game_settings.screen_length)
     )
-    pygame.display.set_caption("Asteriods")
+    pygame.display.set_caption("Asteroids")
 
     # Initialise sound manager
     sound_manager = SoundManager()
@@ -27,7 +27,7 @@ def run_game():
     bullets = Group()
     asteroids = Group()
 
-    gf.create_asteroid(game_settings, screen, asteroids)
+    Asteroid.create_asteroid(game_settings, screen, asteroids)
 
     # Start the main the loop for the game.
     while True:

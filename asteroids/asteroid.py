@@ -45,5 +45,15 @@ class Asteroid(Sprite):
         self.rect.y = int(self.y)
 
     def blitme(self):
-        """Draw the alien at it's current location."""
+        """Draw the asteroid at it's current location."""
         self.screen.blit(self.image, self.rect)
+
+    @staticmethod
+    def create_asteroid(game_settings, screen, asteroids):
+        """Create an asteroid."""
+        asteroid = Asteroid(game_settings, screen)
+        asteroid.rect.x = random.randint(0, game_settings.screen_width - asteroid.rect.width)
+        asteroid.rect.y = random.randint(0, game_settings.screen_length - asteroid.rect.height)
+        asteroid.x = float(asteroid.rect.x)
+        asteroid.y = float(asteroid.rect.y)
+        asteroids.add(asteroid)

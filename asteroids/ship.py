@@ -33,7 +33,7 @@ class Ship():
         self.angle = 0
 
     def update(self):
-        """ Update the ship's position based on the movement flag."""
+        """ Update the ship's position and handle screen wrapping."""
         # Update horizontal movement (x-axis)
         if self.moving_right:
             self.angle -= self.game_settings.rotation_speed

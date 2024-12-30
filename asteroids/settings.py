@@ -1,5 +1,5 @@
 class Settings():
-    """ A class to store all settings for Asteriods."""
+    """ A class to store all settings for Asteroids."""
 
     def __init__(self):
         """ Initialise the game's settings."""
