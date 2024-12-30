@@ -7,7 +7,8 @@ class SoundManager:
         """Initialise the mixer and load sounds."""
         pygame.mixer.init()
         self.sounds = {
-            "bullet": pygame.mixer.Sound('assets/audio/laser_shooting_sfx.wav'),
+            "bullet": pygame.mixer.Sound('assets/audio/bullet.wav'),
+            "explosion": pygame.mixer.Sound('assets/audio/explosion.wav'),
             # Add other sounds here.
         }
 

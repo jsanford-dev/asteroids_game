@@ -20,3 +20,6 @@ class Settings():
         self.bullet_colour = 0, 205, 0
         self.bullets_allowed = 3
         self.max_bullet_distance = 400
+
+        # Asteroid settings.
+        self.asteroid_speed = 0.1
