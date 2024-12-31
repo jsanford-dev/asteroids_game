@@ -49,11 +49,25 @@ class Asteroid(Sprite):
         self.screen.blit(self.image, self.rect)
 
     @staticmethod
-    def create_asteroid(game_settings, screen, asteroids):
-        """Create an asteroid."""
-        asteroid = Asteroid(game_settings, screen)
-        asteroid.rect.x = random.randint(0, game_settings.screen_width - asteroid.rect.width)
-        asteroid.rect.y = random.randint(0, game_settings.screen_length - asteroid.rect.height)
-        asteroid.x = float(asteroid.rect.x)
-        asteroid.y = float(asteroid.rect.y)
-        asteroids.add(asteroid)
+    def create_asteroid(game_settings, screen, asteroids, ship, safe_radius=100):
+        """Create an asteroid ensuring that it does not spawn near the ship."""
+        while True:
+            # Generate asteroid
+            asteroid = Asteroid(game_settings, screen)
+            asteroid.rect.x = random.randint(0, game_settings.screen_width - asteroid.rect.width)
+            asteroid.rect.y = random.randint(0, game_settings.screen_length - asteroid.rect.height)
+            asteroid.x = float(asteroid.rect.x)
+            asteroid.y = float(asteroid.rect.y)
+
+            # Check distance from the ship
+            if ship:
+                dx = asteroid.rect.centerx - ship.rect.centerx
+                dy = asteroid.rect.centery - ship.rect.centery
+                distance = math.sqrt(dx ** 2 + dy ** 2)
+                                    
+                if distance > safe_radius:
+                    asteroids.add(asteroid)
+                    break
+            else:
+                asteroids.add(asteroids)
+                break

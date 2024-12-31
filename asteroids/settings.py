@@ -23,3 +23,4 @@ class Settings():
 
         # Asteroid settings.
         self.asteroid_speed = 0.1
+        self.initial_num_asteroids = 4

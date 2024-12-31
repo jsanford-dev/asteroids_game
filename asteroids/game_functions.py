@@ -96,3 +96,19 @@ def handle_bullet_collisions(sound_manager, bullets, asteroids):
     collisions = pygame.sprite.groupcollide(bullets, asteroids, True, True)
     if collisions:
         sound_manager.play_sound('explosion')
+
+# Handle ship
+def handle_ship_collisions(game_settings, sound_manager, ship, asteroids):
+    """Check for and handle collisions between ship and asteroids."""
+    collided_asteroid = pygame.sprite.spritecollideany(ship, asteroids)
+    if collided_asteroid:
+        sound_manager.play_sound('explosion')
+        asteroids.remove(collided_asteroid)
+        
+        # Recenter the ship to middle of screen
+        ship.centerx = game_settings.screen_width / 2
+        ship.centery = game_settings.screen_length / 2
+        ship.rect.center = (ship.centerx, ship.centery)
+
+        
+
