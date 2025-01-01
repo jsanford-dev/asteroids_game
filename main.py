@@ -28,9 +28,12 @@ def run_game():
     asteroids = Group()
 
     # Set up initial asteroids for start of game.
-    for _ in range(game_settings.initial_num_asteroids):
-        Asteroid.create_asteroid(game_settings, screen, asteroids, ship)
+    def start_new_level():
+        for _ in range(game_settings.initial_num_asteroids + game_settings.current_level - 1):
+            Asteroid.create_asteroid(game_settings, screen, asteroids, ship)
 
+    start_new_level()
+    
     # Start the main the loop for the game.
     while True:
         gf.check_events(game_settings, screen, sound_manager, ship, bullets)
@@ -38,6 +41,11 @@ def run_game():
         asteroids.update()
         gf.update_bullets(game_settings, sound_manager, bullets, asteroids)
         gf.handle_ship_collisions(game_settings, sound_manager, ship, asteroids)
+
+        if len(asteroids) == 0:
+            game_settings.current_level += 1
+            start_new_level()
+            
         gf.update_screen(game_settings, screen, ship, bullets, asteroids)
 
 if __name__ == '__main__':
