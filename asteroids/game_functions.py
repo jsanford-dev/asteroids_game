@@ -1,4 +1,5 @@
 import sys
+from time import sleep
 import pygame
 import math
 
@@ -98,17 +99,30 @@ def handle_bullet_collisions(sound_manager, bullets, asteroids):
         sound_manager.play_sound('explosion')
 
 # Handle ship
-def handle_ship_collisions(game_settings, sound_manager, ship, asteroids):
+def handle_ship_collisions(game_settings, stats, sound_manager, ship, bullets, asteroids):
     """Check for and handle collisions between ship and asteroids."""
     collided_asteroid = pygame.sprite.spritecollideany(ship, asteroids)
     if collided_asteroid:
         sound_manager.play_sound('explosion')
         asteroids.remove(collided_asteroid)
-        
-        # Recenter the ship to middle of screen
-        ship.centerx = game_settings.screen_width / 2
-        ship.centery = game_settings.screen_length / 2
-        ship.rect.center = (ship.centerx, ship.centery)
+        bullets.empty()
+
+        if stats.ships_left > 0:
+            # Decrement ships left
+            stats.ships_left -= 1
+
+            # Pause
+            sleep(0.5)
+            
+            # Recenter the ship to middle of screen
+            ship.centerx = game_settings.screen_width / 2
+            ship.centery = game_settings.screen_length / 2
+            ship.rect.center = (ship.centerx, ship.centery)
+
+        else:
+            stats.game_active = False
+
+
 
         
 

@@ -3,6 +3,7 @@ import pygame
 from pygame.sprite import Group
 
 from asteroids.settings import Settings
+from asteroids.game_stats import GameStats
 from asteroids.sound_manager import SoundManager
 from asteroids.ship import Ship
 from asteroids.asteroid import Asteroid
@@ -18,6 +19,9 @@ def run_game():
         (game_settings.screen_width, game_settings.screen_length)
     )
     pygame.display.set_caption("Asteroids")
+
+    # Create an instance to store game stats.
+    stats = GameStats(game_settings)
 
     # Initialise sound manager
     sound_manager = SoundManager()
@@ -37,14 +41,16 @@ def run_game():
     # Start the main the loop for the game.
     while True:
         gf.check_events(game_settings, screen, sound_manager, ship, bullets)
-        ship.update()
-        asteroids.update()
-        gf.update_bullets(game_settings, sound_manager, bullets, asteroids)
-        gf.handle_ship_collisions(game_settings, sound_manager, ship, asteroids)
 
-        if len(asteroids) == 0:
-            game_settings.current_level += 1
-            start_new_level()
+        if stats.game_active:
+            ship.update()
+            asteroids.update()
+            gf.update_bullets(game_settings, sound_manager, bullets, asteroids)
+            gf.handle_ship_collisions(game_settings, stats, sound_manager, ship, bullets, asteroids)
+
+            if len(asteroids) == 0:
+                game_settings.current_level += 1
+                start_new_level()
             
         gf.update_screen(game_settings, screen, ship, bullets, asteroids)
 

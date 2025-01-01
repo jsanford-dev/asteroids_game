@@ -12,6 +12,7 @@ class Settings():
         self.ship_speed_factor = 0.25
         self.rotation_speed = 0.15
         self.ship_scale = 0.5
+        self.ship_limit = 3
 
         # Bullet settings.
         self.bullet_speed_factor = 1
