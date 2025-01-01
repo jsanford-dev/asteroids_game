@@ -30,6 +30,8 @@ def check_keydown_events(event, game_settings, screen, sound_manager, ship, bull
             new_bullet = Bullet(game_settings, screen, ship)
             bullets.add(new_bullet)
             sound_manager.play_sound('bullet')
+    elif event.key == pygame.K_p:
+        game_settings.paused = not game_settings.paused
 
 def check_keyup_events(event, ship):
     """Respond to key releases."""

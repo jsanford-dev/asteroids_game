@@ -8,6 +8,9 @@ class Settings():
         self.screen_length = 600
         self.bg_colour = (0, 0, 0) # Background colour.
 
+        # Game settings.
+        self.paused = False
+        
         # Ship settings.
         self.ship_speed_factor = 0.25
         self.rotation_speed = 0.15

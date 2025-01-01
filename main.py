@@ -42,7 +42,7 @@ def run_game():
     while True:
         gf.check_events(game_settings, screen, sound_manager, ship, bullets)
 
-        if stats.game_active:
+        if stats.game_active and not game_settings.paused:
             ship.update()
             asteroids.update()
             gf.update_bullets(game_settings, sound_manager, bullets, asteroids)
