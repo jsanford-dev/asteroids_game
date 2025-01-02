@@ -58,6 +58,8 @@ def run_game():
                     safe_zone_center = (game_settings.screen_width / 2, game_settings.screen_length / 2)
                     safe_zone_radius = game_settings.ship_respawn_safe_zone_radius
                     stats.respawn_safe = gf.is_safe_zone_clear(asteroids, safe_zone_center, safe_zone_radius)
+                    asteroids.update()
+                    gf.update_bullets(game_settings, sound_manager, bullets, asteroids)
 
                     if stats.respawn_safe:
                         ship = Ship(game_settings, screen)
