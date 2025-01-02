@@ -1,13 +1,13 @@
 import sys
-from time import sleep
 import pygame
 import math
+from time import sleep
 
 from asteroids.bullet import Bullet
 from asteroids.asteroid import Asteroid
 
 # Handle user actions
-def check_events(game_settings, screen, sound_manager, ship, bullets):
+def check_events(game_settings, stats, screen, sound_manager, play_button, ship, bullets):
     """ Respond to keypresses and mouse events."""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -16,6 +16,14 @@ def check_events(game_settings, screen, sound_manager, ship, bullets):
             check_keydown_events(event, game_settings, screen, sound_manager, ship, bullets)
         elif event.type == pygame.KEYUP:
             check_keyup_events(event, ship)
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            check_play_button(stats, play_button, mouse_x, mouse_y)
+
+def check_play_button(stats, play_button, mouse_x, mouse_y):
+    """Start new game when the player clicks 'New Game.'"""
+    if play_button.rect.collidepoint(mouse_x, mouse_y):
+        stats.game_active = True
 
 def check_keydown_events(event, game_settings, screen, sound_manager, ship, bullets):
     """Respond to keypresses."""
@@ -42,7 +50,7 @@ def check_keyup_events(event, ship):
     elif event.key == pygame.K_UP:
         ship.moving_up = False
 
-def update_screen(game_settings, screen, ship, bullets, asteroid):
+def update_screen(game_settings, stats, screen, play_button, ship, bullets, asteroid):
     """Update images on the screen and flip to the new screen."""
 
     screen.fill(game_settings.bg_colour)
@@ -50,8 +58,14 @@ def update_screen(game_settings, screen, ship, bullets, asteroid):
     for bullet in bullets.sprites():
         bullet.draw_bullet()
 
-    ship.blitme()
+    if ship is not None and not stats.waiting_for_respawn:
+        ship.blitme()
+
     asteroid.draw(screen)
+
+    # Draw the play button if the game is inactive
+    if not stats.game_active:
+        play_button.draw_button()
 
     pygame.display.flip()
 
@@ -112,17 +126,22 @@ def handle_ship_collisions(game_settings, stats, sound_manager, ship, bullets, a
         if stats.ships_left > 0:
             # Decrement ships left
             stats.ships_left -= 1
-
-            # Pause
-            sleep(0.5)
-            
-            # Recenter the ship to middle of screen
-            ship.centerx = game_settings.screen_width / 2
-            ship.centery = game_settings.screen_length / 2
-            ship.rect.center = (ship.centerx, ship.centery)
-
+            stats.waiting_for_respawn = True
+            stats.respawn_safe = False
+            stats.collision_timer = pygame.time.get_ticks()
         else:
             stats.game_active = False
+
+def is_safe_zone_clear(asteroids, center, radius):
+    """ Check if the safe zone around reswapn is clear of asteroids."""
+    for asteroid in asteroids:
+        dx = asteroid.rect.centerx - center[0]
+        dy = asteroid.rect.centery - center[1]
+        distance = math.sqrt(dx ** 2 + dy ** 2)
+        if distance < radius:
+            return False
+    return True
+
 
 
 

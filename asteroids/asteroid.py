@@ -49,7 +49,7 @@ class Asteroid(Sprite):
         self.screen.blit(self.image, self.rect)
 
     @staticmethod
-    def create_asteroid(game_settings, screen, asteroids, ship, safe_radius=100):
+    def create_asteroid(game_settings, screen, asteroids, ship):
         """Create an asteroid ensuring that it does not spawn near the ship."""
         while True:
             # Generate asteroid
@@ -65,7 +65,7 @@ class Asteroid(Sprite):
                 dy = asteroid.rect.centery - ship.rect.centery
                 distance = math.sqrt(dx ** 2 + dy ** 2)
                                     
-                if distance > safe_radius:
+                if distance > game_settings.asteroid_respawn_safe_radius:
                     asteroids.add(asteroid)
                     break
             else:
