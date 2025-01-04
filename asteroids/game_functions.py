@@ -14,7 +14,7 @@ def check_events(game_settings, stats, screen, sound_manager, play_button, ship,
         if event.type == pygame.QUIT:
             sys.exit()
         elif event.type == pygame.KEYDOWN:
-            check_keydown_events(event, game_settings, screen, sound_manager, ship, bullets)
+            check_keydown_events(event, game_settings, screen, sound_manager, ship, bullets, stats)
         elif event.type == pygame.KEYUP:
             check_keyup_events(event, ship)
         elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -26,7 +26,7 @@ def check_play_button(stats, play_button, mouse_x, mouse_y):
     if play_button.rect.collidepoint(mouse_x, mouse_y):
         stats.game_active = True
 
-def check_keydown_events(event, game_settings, screen, sound_manager, ship, bullets):
+def check_keydown_events(event, game_settings, screen, sound_manager, ship, bullets, stats):
     """Respond to keypresses."""
     if event.key == pygame.K_RIGHT:
         ship.moving_right = True
@@ -35,10 +35,13 @@ def check_keydown_events(event, game_settings, screen, sound_manager, ship, bull
     elif event.key == pygame.K_UP:
         ship.moving_up = True
     elif event.key == pygame.K_SPACE:
+        # Prevents bullets being fired if respawning
         if len(bullets) < game_settings.bullets_allowed:
-            new_bullet = Bullet(game_settings, screen, ship)
-            bullets.add(new_bullet)
-            sound_manager.play_sound('bullet')
+            if not stats.waiting_for_respawn and ship is not None:
+                if len(bullets) < game_settings.bullets_allowed:
+                    new_bullet = Bullet(game_settings, screen, ship)
+                    bullets.add(new_bullet)
+                    sound_manager.play_sound('bullet')
     elif event.key == pygame.K_p:
         game_settings.paused = not game_settings.paused
 
