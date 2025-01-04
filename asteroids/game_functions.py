@@ -169,5 +169,3 @@ def handle_respawn(stats, asteroids, ship, game_settings, screen):
             stats.waiting_for_respawn = False
         
     return ship
-        
-

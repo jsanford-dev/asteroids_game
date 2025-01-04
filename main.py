@@ -64,5 +64,4 @@ def run_game():
         gf.update_screen(game_settings, stats, screen, play_button, ship, bullets, asteroids)
 
 if __name__ == '__main__':
-    # test
     run_game()
