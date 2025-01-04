@@ -10,8 +10,8 @@ from asteroids.ship import Ship
 from asteroids.asteroid import Asteroid
 import asteroids.game_functions as gf
 
-def run_game():
-    # Initialise the game, settings, and screen object.
+def initilise_game():
+    """Initialise game components and return them."""
     pygame.init()
     pygame.mixer.init()
     game_settings = Settings()
@@ -20,26 +20,22 @@ def run_game():
     )
     pygame.display.set_caption("Asteroids")
 
-    # Make a play button
     play_button = Button(game_settings, screen, "New Game")
-
-    # Create an instance to store game stats.
     stats = GameStats(game_settings)
-
-    # Initialise sound manager
     sound_manager = SoundManager()
-
-    # Make a ship, group of bullets, and an asteroid
     bullets = Group()
     asteroids = Group()
     ship = None
 
-    # Set up initial asteroids for start of game.
-    def start_new_level():
-        for _ in range(game_settings.initial_num_asteroids + game_settings.current_level - 1):
-            Asteroid.create_asteroid(game_settings, screen, asteroids, ship)
-    
-    # Start the main the loop for the game.
+    return game_settings, screen, play_button, stats, sound_manager, bullets, asteroids, ship
+
+def run_game():
+    # Initialise the game
+    (
+        game_settings, screen, play_button, stats,
+        sound_manager, bullets, asteroids, ship
+    ) = initilise_game()
+
     while True:
         gf.check_events(game_settings, stats, screen, sound_manager, play_button, ship, bullets)
 
@@ -48,35 +44,23 @@ def run_game():
                 ship = Ship(game_settings, screen)
                 bullets.empty()
                 asteroids.empty()
-                start_new_level()
-            
-            if stats.waiting_for_respawn:
-                if pygame.time.get_ticks() - stats.collision_timer < 2000:
-                    asteroids.update()
-                    gf.update_bullets(game_settings, sound_manager, bullets, asteroids)
-                else:
-                    safe_zone_center = (game_settings.screen_width / 2, game_settings.screen_length / 2)
-                    safe_zone_radius = game_settings.ship_respawn_safe_zone_radius
-                    stats.respawn_safe = gf.is_safe_zone_clear(asteroids, safe_zone_center, safe_zone_radius)
-                    asteroids.update()
-                    gf.update_bullets(game_settings, sound_manager, bullets, asteroids)
+                gf.start_new_level(game_settings, screen, asteroids, ship)
 
-                    if stats.respawn_safe:
-                        ship = Ship(game_settings, screen)
-                        ship.centerx = game_settings.screen_width / 2
-                        ship.centery = game_settings.screen_length / 2
-                        ship.rect.center = (ship.centerx, ship.centery)
-                        stats.waiting_for_respawn = False
+            if stats.waiting_for_respawn:
+                ship = gf.handle_respawn(stats, asteroids, ship, game_settings, screen)
             else:
+                # Update game objects
                 ship.update()
                 asteroids.update()
                 gf.update_bullets(game_settings, sound_manager, bullets, asteroids)
                 gf.handle_ship_collisions(game_settings, stats, sound_manager, ship, bullets, asteroids)
 
+                # Check if level is cleared
                 if len(asteroids) == 0:
                     game_settings.current_level += 1
-                    start_new_level()
-            
+                    gf.start_new_level(game_settings, screen, asteroids, ship)
+
+        # Render the updated screen
         gf.update_screen(game_settings, stats, screen, play_button, ship, bullets, asteroids)
 
 if __name__ == '__main__':

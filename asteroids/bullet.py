@@ -4,7 +4,6 @@ import math
 
 class Bullet(Sprite):
     """A class to manage bullets fired from the ship."""
-
     def __init__(self, game_settings, screen, ship):
         """Create a bullet object at the ship's current position."""
         super().__init__()

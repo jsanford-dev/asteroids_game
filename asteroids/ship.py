@@ -2,7 +2,6 @@ import pygame
 import math
 
 class Ship():
-
     def __init__(self, game_settings, screen):
         """ Initialise the ship and set its starting position."""
         self.screen = screen

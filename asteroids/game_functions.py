@@ -3,6 +3,7 @@ import pygame
 import math
 from time import sleep
 
+from asteroids.ship import Ship
 from asteroids.bullet import Bullet
 from asteroids.asteroid import Asteroid
 
@@ -142,8 +143,28 @@ def is_safe_zone_clear(asteroids, center, radius):
             return False
     return True
 
+def start_new_level(game_settings, screen, asteroids, ship):
+    """Start new level by creating asteroids."""
+    for _ in range(game_settings.initial_num_asteroids + game_settings.current_level - 1):
+        Asteroid.create_asteroid(game_settings, screen, asteroids, ship)
 
+def handle_respawn(stats, asteroids, ship, game_settings, screen):
+    """Handle ship respawn after a collision."""
+    if pygame.time.get_ticks() - stats.collision_timer < 2000:
+        asteroids.update()
+    else:
+        safe_zone_center = (game_settings.screen_width / 2, game_settings.screen_length / 2)
+        safe_zone_radius = game_settings.ship_respawn_safe_zone_radius
+        stats.respawn_safe = is_safe_zone_clear(asteroids, safe_zone_center, safe_zone_radius)
+        asteroids.update()
 
-
+        if stats.respawn_safe:
+            ship = Ship(game_settings, screen)
+            ship.centerx = game_settings.screen_width / 2
+            ship.centery = game_settings.screen_length / 2
+            ship.rect.center = (ship.centerx, ship.centery)
+            stats.waiting_for_respawn = False
+        
+    return ship
         
 
