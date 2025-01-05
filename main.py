@@ -56,7 +56,7 @@ def run_game():
                 ship.update()
                 asteroids.update()
                 gf.update_bullets(game_settings, stats, sb, sound_manager, bullets, asteroids)
-                gf.handle_ship_collisions(stats, sound_manager, ship, bullets, asteroids)
+                gf.handle_ship_collisions(stats, sound_manager, ship, bullets, asteroids, sb)
 
                 # Check if level is cleared
                 if len(asteroids) == 0:

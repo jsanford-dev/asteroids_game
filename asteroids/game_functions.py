@@ -43,6 +43,7 @@ def reset_game(game_settings, stats, screen, bullets, asteroids, sb):
     # Reset the scoreboard
     sb.prep_score()
     sb.prep_level()
+    sb.prep_ships()
 
     # Clear bullets and asteroids
     bullets.empty()
@@ -158,7 +159,7 @@ def handle_bullet_collisions(game_settings, stats, sb, sound_manager, bullets, a
         sb.prep_score()
 
 # Handle ship
-def handle_ship_collisions(stats, sound_manager, ship, bullets, asteroids):
+def handle_ship_collisions(stats, sound_manager, ship, bullets, asteroids, sb):
     """Check for and handle collisions between ship and asteroids."""
     collided_asteroid = pygame.sprite.spritecollideany(ship, asteroids)
     if collided_asteroid:
@@ -169,6 +170,7 @@ def handle_ship_collisions(stats, sound_manager, ship, bullets, asteroids):
         if stats.ships_left > 0:
             # Decrement ships left
             stats.ships_left -= 1
+            sb.prep_ships()
             stats.waiting_for_respawn = True
             stats.respawn_safe = False
             stats.collision_timer = pygame.time.get_ticks()
