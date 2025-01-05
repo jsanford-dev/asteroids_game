@@ -42,6 +42,7 @@ def reset_game(game_settings, stats, screen, bullets, asteroids, sb):
 
     # Reset the scoreboard
     sb.prep_score()
+    sb.prep_level()
 
     # Clear bullets and asteroids
     bullets.empty()
