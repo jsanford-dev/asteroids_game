@@ -13,3 +13,4 @@ class GameStats():
         self.waiting_for_respawn = False
         self.respawn_safe = False
         self.collision_timer = 0
+        self.score = 0

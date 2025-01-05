@@ -6,8 +6,9 @@ from asteroids.settings import Settings
 from asteroids.game_stats import GameStats
 from asteroids.play_button import Button
 from asteroids.sound_manager import SoundManager
+from asteroids.scoreboard import Scoreboard
 from asteroids.ship import Ship
-from asteroids.asteroid import Asteroid
+
 import asteroids.game_functions as gf
 
 def initilise_game():
@@ -22,23 +23,24 @@ def initilise_game():
 
     play_button = Button(game_settings, screen, "New Game")
     stats = GameStats(game_settings)
+    sb = Scoreboard(game_settings, screen, stats)
     sound_manager = SoundManager()
     bullets = Group()
     asteroids = Group()
     ship = None
 
-    return game_settings, screen, play_button, stats, sound_manager, bullets, asteroids, ship
+    return game_settings, screen, sb, play_button, stats, sound_manager, bullets, asteroids, ship
 
 def run_game():
     # Initialise the game
     (
-        game_settings, screen, play_button, stats,
+        game_settings, screen, sb, play_button, stats,
         sound_manager, bullets, asteroids, ship
     ) = initilise_game()
 
     while True:
         ship = gf.check_events(game_settings, stats, screen, sound_manager,
-                         play_button, ship, bullets, asteroids)
+                         play_button, ship, bullets, asteroids, sb)
 
         if stats.game_active and not game_settings.paused:
             if ship is None:
@@ -53,8 +55,8 @@ def run_game():
                 # Update game objects
                 ship.update()
                 asteroids.update()
-                gf.update_bullets(game_settings, sound_manager, bullets, asteroids)
-                gf.handle_ship_collisions(game_settings, stats, sound_manager, ship, bullets, asteroids)
+                gf.update_bullets(game_settings, stats, sb, sound_manager, bullets, asteroids)
+                gf.handle_ship_collisions(stats, sound_manager, ship, bullets, asteroids)
 
                 # Check if level is cleared
                 if len(asteroids) == 0:
@@ -62,7 +64,7 @@ def run_game():
                     gf.start_new_level(game_settings, screen, asteroids, ship)
 
         # Render the updated screen
-        gf.update_screen(game_settings, stats, screen, play_button, ship, bullets, asteroids)
+        gf.update_screen(game_settings, stats, screen, sb, play_button, ship, bullets, asteroids)
 
 if __name__ == '__main__':
     run_game()

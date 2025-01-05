@@ -31,3 +31,4 @@ class Settings():
         self.initial_num_asteroids = 4
         self.current_level = 1
         self.asteroid_respawn_safe_radius = 200
+        self.asteroid_points = 50

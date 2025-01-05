@@ -8,7 +8,7 @@ from asteroids.bullet import Bullet
 from asteroids.asteroid import Asteroid
 
 # Handle user actions
-def check_events(game_settings, stats, screen, sound_manager, play_button, ship, bullets, asteroids):
+def check_events(game_settings, stats, screen, sound_manager, play_button, ship, bullets, asteroids, sb):
     """ Respond to keypresses and mouse events."""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -20,25 +20,28 @@ def check_events(game_settings, stats, screen, sound_manager, play_button, ship,
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
             new_ship = check_play_button(stats, play_button, mouse_x, mouse_y,
-                                          game_settings, screen, bullets, asteroids)
+                                          game_settings, screen, bullets, asteroids, sb)
             if new_ship:
                 ship = new_ship
                 
     return ship
 
 def check_play_button(stats, play_button, mouse_x, mouse_y, game_settings,
-                       screen, bullets, asteroids):
+                       screen, bullets, asteroids, sb):
     """Start new game when the player clicks 'New Game.'"""
     if play_button.rect.collidepoint(mouse_x, mouse_y):
         stats.game_active = True
-        return reset_game(game_settings, stats, screen, bullets, asteroids)
+        return reset_game(game_settings, stats, screen, bullets, asteroids, sb)
 
-def reset_game(game_settings, stats, screen, bullets, asteroids):
+def reset_game(game_settings, stats, screen, bullets, asteroids, sb):
     """Reset the game to its initial state."""
     # Reset stats
     stats.reset_stats()
     stats.game_active = True
     game_settings.current_level = 1
+
+    # Reset the scoreboard
+    sb.prep_score()
 
     # Clear bullets and asteroids
     bullets.empty()
@@ -84,7 +87,7 @@ def check_keyup_events(event, ship):
     elif event.key == pygame.K_UP:
         ship.moving_up = False
 
-def update_screen(game_settings, stats, screen, play_button, ship, bullets, asteroid):
+def update_screen(game_settings, stats, screen, sb, play_button, ship, bullets, asteroid):
     """Update images on the screen and flip to the new screen."""
 
     screen.fill(game_settings.bg_colour)
@@ -97,6 +100,9 @@ def update_screen(game_settings, stats, screen, play_button, ship, bullets, aste
 
     asteroid.draw(screen)
 
+    # Draw the score information
+    sb.show_score()
+
     # Draw the play button if the game is inactive
     if not stats.game_active:
         play_button.draw_button()
@@ -104,11 +110,11 @@ def update_screen(game_settings, stats, screen, play_button, ship, bullets, aste
     pygame.display.flip()
 
 # Handle bullets
-def update_bullets(game_settings, sound_manager, bullets, asteroid):
+def update_bullets(game_settings, stats, sb, sound_manager, bullets, asteroids):
     """Update bullets and handle collisions."""
     bullets.update()
     handle_bullet_removal(game_settings, bullets)
-    handle_bullet_collisions(sound_manager, bullets, asteroid)
+    handle_bullet_collisions(game_settings, stats, sb, sound_manager, bullets, asteroids)
 
 def handle_bullet_removal(game_settings, bullets):
     """Handle bullets that exceed distance or go out of bounds."""
@@ -142,14 +148,16 @@ def handle_bullet_removal(game_settings, bullets):
         bullet.rect.centerx = bullet.x
         bullet.rect.centery = bullet.y
 
-def handle_bullet_collisions(sound_manager, bullets, asteroids):
+def handle_bullet_collisions(game_settings, stats, sb, sound_manager, bullets, asteroids):
     """Check for and handle collisions between bullets and asteroids."""
     collisions = pygame.sprite.groupcollide(bullets, asteroids, True, True)
     if collisions:
         sound_manager.play_sound('explosion')
+        stats.score += game_settings.asteroid_points
+        sb.prep_score()
 
 # Handle ship
-def handle_ship_collisions(game_settings, stats, sound_manager, ship, bullets, asteroids):
+def handle_ship_collisions(stats, sound_manager, ship, bullets, asteroids):
     """Check for and handle collisions between ship and asteroids."""
     collided_asteroid = pygame.sprite.spritecollideany(ship, asteroids)
     if collided_asteroid:
