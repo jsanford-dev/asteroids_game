@@ -8,7 +8,7 @@ from asteroids.bullet import Bullet
 from asteroids.asteroid import Asteroid
 
 # Handle user actions
-def check_events(game_settings, stats, screen, sound_manager, play_button, ship, bullets):
+def check_events(game_settings, stats, screen, sound_manager, play_button, ship, bullets, asteroids):
     """ Respond to keypresses and mouse events."""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -19,12 +19,42 @@ def check_events(game_settings, stats, screen, sound_manager, play_button, ship,
             check_keyup_events(event, ship)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            check_play_button(stats, play_button, mouse_x, mouse_y)
+            new_ship = check_play_button(stats, play_button, mouse_x, mouse_y,
+                                          game_settings, screen, bullets, asteroids)
+            if new_ship:
+                ship = new_ship
+                
+    return ship
 
-def check_play_button(stats, play_button, mouse_x, mouse_y):
+def check_play_button(stats, play_button, mouse_x, mouse_y, game_settings,
+                       screen, bullets, asteroids):
     """Start new game when the player clicks 'New Game.'"""
     if play_button.rect.collidepoint(mouse_x, mouse_y):
         stats.game_active = True
+        return reset_game(game_settings, stats, screen, bullets, asteroids)
+
+def reset_game(game_settings, stats, screen, bullets, asteroids):
+    """Reset the game to its initial state."""
+    # Reset stats
+    stats.reset_stats()
+    stats.game_active = True
+    game_settings.current_level = 1
+
+    # Clear bullets and asteroids
+    bullets.empty()
+    asteroids.empty()
+
+    # Reintialise the hip
+    ship = Ship(game_settings, screen)
+    ship.centerx = game_settings.screen_width / 2
+    ship.centery = game_settings.screen_length / 2
+    ship.rect.center = (ship.centerx, ship.centery)
+
+    # Create intial set of asteroids
+    for _ in range(game_settings.initial_num_asteroids):
+        Asteroid.create_asteroid(game_settings, screen, asteroids, ship)
+
+    return ship
 
 def check_keydown_events(event, game_settings, screen, sound_manager, ship, bullets, stats):
     """Respond to keypresses."""

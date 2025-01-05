@@ -37,7 +37,8 @@ def run_game():
     ) = initilise_game()
 
     while True:
-        gf.check_events(game_settings, stats, screen, sound_manager, play_button, ship, bullets)
+        ship = gf.check_events(game_settings, stats, screen, sound_manager,
+                         play_button, ship, bullets, asteroids)
 
         if stats.game_active and not game_settings.paused:
             if ship is None:
