@@ -16,7 +16,7 @@ class Settings():
         self.rotation_speed = 0.30
         self.ship_scale = 0.5
         self.ship_limit = 3
-        self.ship_respawn_safe_zone_radius = 100
+        self.ship_respawn_safe_zone_radius = 200
 
         # Bullet settings.
         self.bullet_speed_factor = 1
@@ -28,7 +28,7 @@ class Settings():
 
         # Asteroid settings.
         self.asteroid_speed = 0.2
-        self.initial_num_asteroids = 4
+        self.initial_num_asteroids = 20
         self.current_level = 1
-        self.asteroid_respawn_safe_radius = 200
+        self.asteroid_respawn_safe_radius = 300
         self.asteroid_points = 50

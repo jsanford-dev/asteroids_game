@@ -29,8 +29,10 @@ def check_events(game_settings, stats, screen, sound_manager, play_button, ship,
 def check_play_button(stats, play_button, mouse_x, mouse_y, game_settings,
                        screen, bullets, asteroids, sb):
     """Start new game when the player clicks 'New Game.'"""
-    if play_button.rect.collidepoint(mouse_x, mouse_y):
-        stats.game_active = True
+    #if play_button.rect.collidepoint(mouse_x, mouse_y):
+    #    stats.game_active = True
+    button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
+    if button_clicked and not stats.game_active:
         return reset_game(game_settings, stats, screen, bullets, asteroids, sb)
 
 def reset_game(game_settings, stats, screen, bullets, asteroids, sb):

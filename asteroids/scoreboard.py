@@ -48,8 +48,16 @@ class Scoreboard():
         self.ships = Group()
         for ship_number in range(self.stats.ships_left):
             ship = Ship(self.game_settings, self.screen)
-            ship.rect.x = 10 + ship_number * ship.rect.width
-            ship.rect.y = 10
+
+            scaled_image = ship.original_image
+            ship.rect = scaled_image.get_rect()
+
+            # Position the ships on the scoreboard
+            ship.rect.x = 10 + ship_number * (ship.rect.width + 10)  # Add spacing
+            ship.rect.y = 20
+
+            # Create a new sprite with the scaled image
+            ship.image = scaled_image
             self.ships.add(ship)
 
     def show_score(self):
