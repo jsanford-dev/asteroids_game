@@ -36,6 +36,3 @@ venv.bak/
 # Pygame-related artifacts
 assets/audio/*.wav~
 assets/images/*.bmp~
-
-# Misc files
-notes.txt
