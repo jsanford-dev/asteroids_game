@@ -159,7 +159,8 @@ def handle_bullet_collisions(game_settings, stats, sb, sound_manager, bullets, a
         sound_manager.play_sound('explosion')
         stats.score += game_settings.asteroid_points
         sb.prep_score()
-
+        check_high_score(stats, sb)
+    
 # Handle ship
 def handle_ship_collisions(stats, sound_manager, ship, bullets, asteroids, sb):
     """Check for and handle collisions between ship and asteroids."""
@@ -212,3 +213,10 @@ def handle_respawn(stats, asteroids, ship, game_settings, screen):
             stats.waiting_for_respawn = False
         
     return ship
+
+# Scoreboard
+def check_high_score(stats, sb):
+    """Check to see if there's a new high score."""
+    if stats.score > stats.high_score:
+        stats.high_score = stats.score
+        sb.prep_high_score()

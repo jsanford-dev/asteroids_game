@@ -64,7 +64,6 @@ def run_game():
                     gf.start_new_level(game_settings, screen, asteroids, ship)
                     sb.prep_level()
 
-
         # Render the updated screen
         gf.update_screen(game_settings, stats, screen, sb, play_button, ship, bullets, asteroids)
 

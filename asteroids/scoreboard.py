@@ -18,6 +18,7 @@ class Scoreboard():
 
         # Prepare the initial images
         self.prep_score()
+        self.prep_high_score()
         self.prep_level()
         self.prep_ships()
 
@@ -31,6 +32,18 @@ class Scoreboard():
         self.score_rect = self.score_image.get_rect()
         self.score_rect.right = self.screen_rect.right - 20
         self.score_rect.top = 20
+    
+    def prep_high_score(self):
+        """Turn the high score into a rendered image."""
+        high_score = self.stats.high_score
+        high_score_str = f"High Score: {high_score}"
+        self.high_score_image = self.font.render(high_score_str, True,
+                                self.text_colour, self.game_settings.bg_colour)
+        
+        # Center the high score at the top of the screen.
+        self.high_score_rect = self.high_score_image.get_rect()
+        self.high_score_rect.centerx = self.screen_rect.centerx
+        self.high_score_rect.bottom = self.score_rect.bottom
 
     def prep_level(self):
         """Turn the level into a rendered image."""
@@ -63,6 +76,7 @@ class Scoreboard():
     def show_score(self):
         """Draw score, items and lives to the screen."""
         self.screen.blit(self.score_image, self.score_rect)
+        self.screen.blit(self.high_score_image, self.high_score_rect)
         self.screen.blit(self.level_image, self.level_rect)
         self.ships.draw(self.screen)
 
