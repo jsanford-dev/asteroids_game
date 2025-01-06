@@ -29,7 +29,8 @@ class Asteroid(Sprite):
         """Update the asteroid's postion based on it's velocity."""
         self.x += self.velocity_x
         self.y += self.velocity_y
-
+        
+        # Screen wrapping logic
         if self.x < -self.rect.width:
             self.x = self.game_settings.screen_width
         elif self.x > self.game_settings.screen_width:
