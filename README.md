@@ -24,7 +24,7 @@ A python based remake of the classic game **Asteroids**, built with Pygame. Insp
 1. Clone this repository
     ```bash
     git clone https://github.com/jsanford-dev/asteroids_game.git
-    cd asteroids-game
+    cd asteroids_game
     ```
 
 2. Ensure you have Python 3.8 or higher installed. Install the required dependencies
