@@ -15,7 +15,7 @@ A python based remake of the classic game **Asteroids**, built with Pygame. Insp
 
 ## Gameplay Screenshot
 
-![Asteroids Gameplay](assets/game_play.png)
+![Asteroids Gameplay](assets/images/game_play.png)
 
 ---
 
